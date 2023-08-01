@@ -150,6 +150,7 @@ let update = () => {
 
     if (score >= foodCount) {
         drawWin();
+        over = true;
         clearInterval(gameInterval);
         finishSound.play();
     }
