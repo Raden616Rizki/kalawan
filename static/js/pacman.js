@@ -1,11 +1,11 @@
 class Pacman {
-    constructor(x, y, width, height, speed) {
+    constructor(x, y, width, height, speed, direction) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.speed = speed;
-        this.direction = directionRight;
+        this.direction = direction;
         this.nextDirection = this.direction;
         this.currentFrame = 1;
         this.frameCount = 7;
@@ -18,6 +18,7 @@ class Pacman {
     moveProcess() {
         this.changeDirectionIfPossible();
         this.moveForwards();
+        // console.log('x : ' + this.x + ' y : ' + this.y);
         if (this.checkCollision()) {
             this.moveBackwards();
         }
@@ -31,12 +32,34 @@ class Pacman {
                     this.getMapX() == j &&
                     this.getMapY() == i
                 ) {
-                    map[i][j] = 3;
+                    map[i][j] = 0;
 
                     if (openingFinished) {
                         chomp.play();
                     }
                     score += 1;
+                } else if (
+                    map[i][j] == 3 &&
+                    this.getMapX() == j &&
+                    this.getMapY() == i
+                ) {
+                    let xValue = j * 20;
+                    let yValue = i * 20;
+                    let location = {x: xValue, y: yValue};
+
+                    let index = portal.findIndex((item) => item.x == location.x && item.y == location.y);
+
+                    if (
+                        this.x == xValue &&
+                        this.y == yValue
+                    ) {
+                        let oppositeIndex = portal.length - (1 + index);
+                        let xNew = portal[oppositeIndex].x;
+                        let yNew = portal[oppositeIndex].y;
+
+                        // Change Location
+                        createNewPacman(xNew, yNew, this.direction);
+                    }
                 }
             }
         }
@@ -85,7 +108,7 @@ class Pacman {
         ) {
             return true;
         }
-        
+
         return false;
     }
 

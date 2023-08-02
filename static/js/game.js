@@ -33,6 +33,7 @@ let clicked = false;
 let opening = true;
 let over = false;
 let openingFinished = false;
+let portal = [];
 
 const directionRight = 4;
 const directionUp = 3;
@@ -68,7 +69,7 @@ let map = [
     [1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1],
-    [1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1],
+    [3, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3],
     [1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0],
     [0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0],
@@ -87,6 +88,11 @@ for (let i = 0; i < map.length; i++) {
     for (let j = 0; j < map[0].length; j++) {
         if (map[i][j] == 2) {
             foodCount += 1;
+        } else if (map[i][j] == 3) {
+            let xValue = j * 20;
+            let yValue = i * 20;
+            let location = {x: xValue, y: yValue};
+            portal.push(location);
         }
     }
 }
@@ -110,7 +116,7 @@ let randomTargetsForGhosts = [{
 ];
 
 let startGame = () => {
-    createNewPacman();
+    createNewPacman(oneBlockSize, oneBlockSize, directionRight);
     createGhosts();
     gameLoop();
 }
@@ -157,7 +163,7 @@ let update = () => {
 }
 
 let restartGame = () => {
-    createNewPacman();
+    createNewPacman(oneBlockSize, oneBlockSize, pacman.direction);
     createGhosts();
     lives -= 1;
 
@@ -313,13 +319,14 @@ let drawWalls = () => {
     }
 }
 
-let createNewPacman = () => {
+let createNewPacman = (x, y, direction) => {
     pacman = new Pacman(
+        x,
+        y,
         oneBlockSize,
         oneBlockSize,
-        oneBlockSize,
-        oneBlockSize,
-        oneBlockSize / 5
+        oneBlockSize / 5,
+        direction
     );
 }
 
